@@ -1,0 +1,38 @@
+name: AndroidBuild
+
+on:
+  pull_request:
+    branches: [ master ]
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 11  # Defina a versão do JDK para compilar o projeto Android
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+
+      - name: Prepare Android SDK
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y lib32stdc++6 lib32z1
+          sudo apt-get install -y curl
+          yes | sdkmanager --licenses
+          sdkmanager "platform-tools" "platforms;android-30" "build-tools;30.0.3" # Verifique as versões corretas para o seu projeto
+
+      - name: Build With Gradle
+        run: ./gradlew assembleDebug  # Use o comando correto para gerar o APK de debug
+
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: BusinessCardCompose.apk
+          path: app/build/outputs/apk/debug/app-debug.apk  # Caminho correto do APK
