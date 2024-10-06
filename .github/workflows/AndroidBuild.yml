@@ -31,6 +31,9 @@ jobs:
           yes | $ANDROID_SDK_ROOT/cmdline-tools/tools/bin/sdkmanager --licenses
           $ANDROID_SDK_ROOT/cmdline-tools/tools/bin/sdkmanager "platform-tools" "platforms;android-30" "build-tools;30.0.3"
 
+      - name: Grant execute permission for Gradlew
+        run: chmod +x ./gradlew
+
       - name: Build With Gradle
         run: ./gradlew assembleDebug
 
